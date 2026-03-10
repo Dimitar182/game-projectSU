@@ -178,6 +178,7 @@ def show_menu():
             print("Невалиден избор, опитай пак.")
     else:
         print("Невалидни години!!")
+    return True
 
 
 def main():
@@ -189,6 +190,8 @@ def main():
         if is_game_over():
             break
 
-        show_menu()
+        if not show_menu():
+            break
+
 
 main()
