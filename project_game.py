@@ -7,7 +7,7 @@ player = {
     "age": 0,
     "health": 100,
     "happiness": 100,
-    "intelligence": 50,
+    "intelligence": 10,
     "energy": 100,
     "money": 0
 }
@@ -124,26 +124,39 @@ def is_game_over():
 
 
 def show_menu():
-    print("\n=== МЕНЮ ===")
-    print("1. Следваща година")
-    print("2. Учи")
-    print("3. Играй")
-    print("4. Спортувай")
-    print("5. Почивай")
-    print("6. Покажи статус")
-    print("7. Изход")
+    if player["age"] == 0 or player["age"] <= 4:
+        print("\n=== МЕНЮ ===")
+        print("1. Следваща година")
+        print("2. Играй")
+        print("3. Почивай")
+        print("4. Покажи статус")
+        print("5. Изход")
 
+        choice = input("Избери действие: ")
 
-def main():
-    create_character()
+        if choice == "1":
+            next_year()
+        elif choice == "2":
+            play()
+        elif choice == "3":
+            rest()
+        elif choice == "4":
+            show_status()
+        elif choice == "5":
+            print("Излезе от играта.")
+            return False
+        else:
+            print("Невалиден избор, опитай пак.")
+    elif player["age"] > 4:
+        print("\n=== МЕНЮ ===")
+        print("1. Следваща година")
+        print("2. Учи")
+        print("3. Играй")
+        print("4. Спортувай")
+        print("5. Почивай")
+        print("6. Покажи статус")
+        print("7. Изход")
 
-    while True:
-        check_stats()
-
-        if is_game_over():
-            break
-
-        show_menu()
         choice = input("Избери действие: ")
 
         if choice == "1":
@@ -160,9 +173,22 @@ def main():
             show_status()
         elif choice == "7":
             print("Излезе от играта.")
-            break
+            return False
         else:
             print("Невалиден избор, опитай пак.")
+    else:
+        print("Невалидни години!!")
 
+
+def main():
+    create_character()
+
+    while True:
+        check_stats()
+
+        if is_game_over():
+            break
+
+        show_menu()
 
 main()
