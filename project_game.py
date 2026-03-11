@@ -15,13 +15,22 @@ player = {
 
 def create_character():
     print("=== СЪЗДАВАНЕ НА ГЕРОЙ ===")
-    player["name"] = input("Въведи име на героя: ")
+    while True:
+        player["name"] = input("Въведи име на героя: ")
+        if len(player["name"]) > 30:
+            print("Името не може да е по-дълго от 30 символа!")
+        else:
+            player["name"] = player["name"]
+            break
     player["birthplace"] = input("Въведи място на раждане: ")
     while True:
         question = input("Искате ли да започнете от определени години? (Да/Не) или (Yes/No)")
         if question == "Да" or question == "да" or question == "Yes" or question == "yes":
             player["age"] = int(input("Въведи години на героя: "))
-            break
+            if player["age"] > 100:
+                print(f"Въведи по-малко от 100 години")
+            else:
+                break
         elif question == "Не" or question == "не" or question == "No" or question == "no":
             print(f"Вие току що излезнате на този свят.")
             break
