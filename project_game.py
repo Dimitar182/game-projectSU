@@ -20,7 +20,6 @@ def create_character():
         if len(player["name"]) > 30:
             print("Името не може да е по-дълго от 30 символа!")
         else:
-            player["name"] = player["name"]
             break
     player["birthplace"] = input("Въведи място на раждане: ")
     while True:
