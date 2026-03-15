@@ -60,6 +60,8 @@ def next_year():
     player["age"] += 1
     player["energy"] -= 10
     print(f"\nМина още една година. Вече си на {player['age']} години.")
+    if player["money"] > 0:
+        player["money"] = int(player["money"] * 1.05) # 5% годишна лихва
     random_event()
 
 
