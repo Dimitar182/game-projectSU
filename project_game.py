@@ -218,6 +218,10 @@ def is_game_over():
         return True
     if player["energy"] <= 0:
         print("\nГероят е напълно изтощен. Играта свърши.")
+        score = player["money"] + (player["intelligence"] * 10) + (player["age"] * 50)
+        print(f"\n🪦 ПОЧИВАЙ В МИР, {player['name']} 🪦")
+        print(f"Доживя до {player['age']} години.")
+        print(f"Твоят финален резултат е: {score} точки!")
         return True
     return False
 
