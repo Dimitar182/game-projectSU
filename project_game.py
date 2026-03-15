@@ -9,7 +9,8 @@ player = {
     "happiness": 100,
     "intelligence": 10,
     "energy": 100,
-    "money": 0
+    "money": 0,
+    "degree": False
 }
 
 
@@ -96,7 +97,7 @@ def rest():
 
 
 def work():
-    if player["intelligence"] > 50:
+    if player.get("degree") == True:
         print("\nТи работиш като Софтуерен Инженер! +100 пари")
         player["money"] += 100
     else:
@@ -160,6 +161,16 @@ def crime():
         player["age"] += 3 # Губиш 3 години в затвора (Lose 3 years in prison)
         player["happiness"] = 0
         print("Хванаха те! Прекара 3 години в затвора и загуби всичкото си щастие.")
+
+def university():
+    if player["money"] >= 500 and not player.get("degree"):
+        player["money"] -= 500
+        player["degree"] = True
+        player["intelligence"] += 40
+        print("Честито! Завърши университет. Вече ще изкарваш много повече пари!")
+    else:
+        print("Нямаш достатъчно пари (500) или вече имаш диплома!")
+
 
 
 def random_event():
@@ -305,7 +316,9 @@ def show_menu():
         print("6. Магазин")
         print("7. Извърши обир")
         print("8. Покажи статус")
-        print("9. Изход")
+        if not player.get("degree"):
+            print("9. Завърши Университет (500 пари)")
+        print("0. Изход")
 
         choice = input("Избери действие: ")
 
@@ -325,7 +338,9 @@ def show_menu():
             crime()
         elif choice == "8":
             show_status()
-        elif choice == "9":
+        elif choice == "9" and not player.get("degree"):
+            university()
+        elif choice == "0":
             print("Излезе от играта.")
             return False
         else:
