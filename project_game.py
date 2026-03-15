@@ -102,6 +102,53 @@ def work():
         player["money"] += 30
     player["energy"] -= 20
 
+def shop():
+    print("\n=== МАГАЗИН ===")
+    print(f"Разполагаш с: {player['money']} пари")
+    print("1. Книга (20 пари) -> +10 Интелигентност")
+    print("2. Енергийна напитка (10 пари) -> +20 Енергия, -5 Здраве")
+    print("3. Фитнес карта (50 пари) -> +15 Здраве, -10 Енергия")
+    print("4. Видеоигра (40 пари) -> +20 Щастие, -5 Енергия")
+    print("5. Изход от магазина")
+
+    choice = input("Какво искаш да купиш? (1-5): ")
+
+    if choice == "1":
+        if player["money"] >= 20:
+            player["money"] -= 20
+            player["intelligence"] += 10
+            print("Ти си купи Книга! Интелигентността ти се покачи.")
+        else:
+            print("Нямаш достатъчно пари за това!")
+    elif choice == "2":
+        if player["money"] >= 10:
+            player["money"] -= 10
+            player["energy"] += 20
+            player["health"] -= 5
+            print("Изпи Енергийна напитка! Имаш повече енергия, но не е много здравословно.")
+        else:
+            print("Нямаш достатъчно пари за това!")
+    elif choice == "3":
+        if player["money"] >= 50:
+            player["money"] -= 50
+            player["health"] += 15
+            player["energy"] -= 10
+            print("Купи си Фитнес карта и тренира здраво! Здравето ти се подобри.")
+        else:
+            print("Нямаш достатъчно пари за това!")
+    elif choice == "4":
+        if player["money"] >= 40:
+            player["money"] -= 40
+            player["happiness"] += 20
+            player["energy"] -= 5
+            print("Купи си нова Видеоигра! Много се забавлява.")
+        else:
+            print("Нямаш достатъчно пари за това!")
+    elif choice == "5":
+        print("Излезе от магазина.")
+    else:
+        print("Невалиден избор!")
+
 
 def random_event():
     age = player["age"]
@@ -239,8 +286,9 @@ def show_menu():
         print("3. Играй")
         print("4. Спортувай")
         print("5. Почивай")
-        print("6. Покажи статус")
-        print("7. Изход")
+        print("6. Магазин")
+        print("7. Покажи статус")
+        print("8. Изход")
 
         choice = input("Избери действие: ")
 
@@ -255,8 +303,10 @@ def show_menu():
         elif choice == "5":
             rest()
         elif choice == "6":
-            show_status()
+            shop()
         elif choice == "7":
+            show_status()
+        elif choice == "8":
             print("Излезе от играта.")
             return False
         else:
