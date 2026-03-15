@@ -151,6 +151,16 @@ def shop():
     else:
         print("Невалиден избор!")
 
+def crime():
+    if random.randint(1, 10) > 4: # 60% шанс за успех (60% success chance)
+        stolen = random.randint(50, 200)
+        player["money"] += stolen
+        print(f"Успешен обир! Ти открадна {stolen} пари.")
+    else:
+        player["age"] += 3 # Губиш 3 години в затвора (Lose 3 years in prison)
+        player["happiness"] = 0
+        print("Хванаха те! Прекара 3 години в затвора и загуби всичкото си щастие.")
+
 
 def random_event():
     age = player["age"]
@@ -293,8 +303,9 @@ def show_menu():
         print("4. Спортувай")
         print("5. Почивай")
         print("6. Магазин")
-        print("7. Покажи статус")
-        print("8. Изход")
+        print("7. Извърши обир")
+        print("8. Покажи статус")
+        print("9. Изход")
 
         choice = input("Избери действие: ")
 
@@ -311,8 +322,10 @@ def show_menu():
         elif choice == "6":
             shop()
         elif choice == "7":
-            show_status()
+            crime()
         elif choice == "8":
+            show_status()
+        elif choice == "9":
             print("Излезе от играта.")
             return False
         else:
