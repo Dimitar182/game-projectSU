@@ -93,6 +93,16 @@ def rest():
     print("Почина си добре. +20 енергия, +5 здраве")
 
 
+def work():
+    if player["intelligence"] > 50:
+        print("\nТи работиш като Софтуерен Инженер! +100 пари")
+        player["money"] += 100
+    else:
+        print("\nТи работиш като Касиер. +30 пари")
+        player["money"] += 30
+    player["energy"] -= 20
+
+
 def random_event():
     age = player["age"]
 
@@ -166,7 +176,9 @@ def is_game_over():
 
 
 def show_menu():
-    if player["age"] == 0 or player["age"] <= 4:
+    age = player["age"]
+
+    if age <= 4:
         print("\n=== МЕНЮ ===")
         print("1. Следваща година")
         print("2. Играй")
@@ -189,7 +201,8 @@ def show_menu():
             return False
         else:
             print("Невалиден избор, опитай пак.")
-    elif player["age"] > 4:
+
+    elif age < 18:
         print("\n=== МЕНЮ ===")
         print("1. Следваща година")
         print("2. Учи")
@@ -218,8 +231,40 @@ def show_menu():
             return False
         else:
             print("Невалиден избор, опитай пак.")
+
+    elif age >= 18:
+        print("\n=== МЕНЮ ===")
+        print("1. Следваща година")
+        print("2. Работи")
+        print("3. Играй")
+        print("4. Спортувай")
+        print("5. Почивай")
+        print("6. Покажи статус")
+        print("7. Изход")
+
+        choice = input("Избери действие: ")
+
+        if choice == "1":
+            next_year()
+        elif choice == "2":
+            work()
+        elif choice == "3":
+            play()
+        elif choice == "4":
+            sport()
+        elif choice == "5":
+            rest()
+        elif choice == "6":
+            show_status()
+        elif choice == "7":
+            print("Излезе от играта.")
+            return False
+        else:
+            print("Невалиден избор, опитай пак.")
+
     else:
         print("Невалидни години!!")
+
     return True
 
 
