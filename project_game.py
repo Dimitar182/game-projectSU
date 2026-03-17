@@ -72,11 +72,18 @@ def show_status():
 def next_year():
     if player["in_university"] and not player["studied_this_year"]:
         print("\nНе можеш да минеш година напред, без да си учил в университета.")
-        return
+        return True 
 
     player["age"] += 1
     player["energy"] -= 10
     print(f"\nМина още една година. Вече си на {player['age']} години.")
+
+    if player["age"] > 100:
+        death_chance = 0.05 
+        if random.random() < death_chance:
+            print(f"\nЗа съжаление, животът ти приключи на {player['age']} години.")
+            score = player["money"] + (player["intelligence"] * 10) + (player["age"] * 50)
+            exit() 
 
     if player["in_university"]:
         if random.random() < 0.75:
@@ -97,6 +104,7 @@ def next_year():
             player["studied_this_year"] = False
 
     maybe_random_event(0.9)
+    return True
 
 
 def study():
