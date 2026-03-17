@@ -348,13 +348,28 @@ def is_game_over():
         print(f"Доживя до {player['age']} години.")
         print(f"Твоят финален резултат е: {score} точки!")
         return True
-    if player["energy"] <= 0:
-        print("\nГероят е напълно изтощен. Играта свърши.")
-        return True
     return False
 
 
 def show_menu():
+    if player["energy"] <= 0:
+        print("\nТи си прекалено изморен. Можеш само да почиваш.")
+
+        print("\n=== МЕНЮ ===")
+        print("1. Почивай")
+        print("2. Покажи статус")
+
+        choice = input("Избери действие: ")
+
+        if choice == "1":
+            rest()
+        elif choice == "2":
+            show_status()
+        else:
+            print("Невалиден избор.")
+
+        return True
+
     if player["age"] <= 4:
         print("\n=== МЕНЮ ===")
         print("1. Следваща година")
