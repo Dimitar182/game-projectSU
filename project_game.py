@@ -64,6 +64,8 @@ def show_status():
         print(f"Специалност: {player['major']}")
         print(f"Курс: {player['university_year']} / {player['university_duration']}")
         print(f"Учи тази година: {'Да' if player['studied_this_year'] else 'Не'}")
+    if player["major"] and player["degree"] == True:
+        print(player["major"])
     print("-" * 30)
 
 
@@ -89,8 +91,8 @@ def next_year():
             print(f"\nПоздравления! Завърши '{player['major']}' успешно!")
             player["degree"] = True
             player["in_university"] = False
-            player["major"] = ""
             player["university_year"] = 0
+            player["major"] = "Бакалавър по " + player["major"]
             player["university_duration"] = 0
             player["studied_this_year"] = False
 
@@ -102,14 +104,14 @@ def study():
     player["intelligence"] += 5
     player["energy"] -= 10
     player["happiness"] -= 5
-    print("Научи нещо ново! +5 интелигентност")
+    print("Научи нещо ново!\n+5 интелигентност -10 енергия -5 щастие")
 
 
 def play():
     print("\nТи избра да играеш.")
     player["happiness"] += 10
     player["energy"] -= 10
-    print("Забавлява се! +10 щастие")
+    print("Забавлява се!\n+10 щастие -10 енергия")
 
 
 def sport():
@@ -117,14 +119,14 @@ def sport():
     player["health"] += 5
     player["energy"] -= 15
     player["happiness"] += 5
-    print("Тренира успешно! +5 здраве, +5 щастие")
+    print("Тренира успешно!\n+5 здраве +5 щастие -15 енергия")
 
 
 def rest():
     print("\nТи избра да почиваш.")
     player["energy"] += 20
     player["health"] += 5
-    print("Почина си добре. +20 енергия, +5 здраве")
+    print("Почина си добре.\n+20 енергия +5 здраве")
 
 
 def work():
@@ -145,7 +147,7 @@ def work():
     player["energy"] -= 20
     player["happiness"] -= 5
 
-    print(f"Изкара {earned_money} лв.")
+    print(f"Изкара {earned_money} лв.\n-20 енергия -5 щастие")
 
 def shop():
     print("\n=== МАГАЗИН ===")
@@ -264,7 +266,7 @@ def study_university():
     player["happiness"] -= 5
     player["studied_this_year"] = True
 
-    print("Учи успешно тази година в университета.")
+    print("Учи успешно тази година в университета.\n+5 интелект -15 енергия -5 щастие")
     maybe_random_event(0.5)
 
 
@@ -318,7 +320,7 @@ def random_event():
     event = random.choice(events)
     text, effects = event
 
-    print(f"\nСлучайно събитие: {text}")
+    print(f"\nСлучайно събитие: {text}\n{effects}")
 
     for stat, value in effects.items():
         player[stat] += value
@@ -434,9 +436,10 @@ def show_menu():
         elif not player["degree"]:
             print("3. Кандидатствай в университет")
         print("4. Спортувай")
-        print("5. Почивай")
-        print("6. Покажи статус")
-        print("7. Изход")
+        print("5. Магазин")
+        print("6. Почивай")
+        print("7. Покажи статус")
+        print("8. Изход")
 
         choice = input("Избери действие: ")
 
@@ -454,10 +457,12 @@ def show_menu():
         elif choice == "4":
             sport()
         elif choice == "5":
-            rest()
+            shop()
         elif choice == "6":
-            show_status()
+            rest()
         elif choice == "7":
+            show_status()
+        elif choice == "8":
             print("Излезе от играта.")
             return False
         else:
