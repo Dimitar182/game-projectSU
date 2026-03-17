@@ -10,7 +10,12 @@ player = {
     "intelligence": 10,
     "energy": 100,
     "money": 0,
-    "degree": False
+    "degree": False,
+    "major": "",
+    "in_university": False,
+    "university_year": 0,
+    "university_duration": 0,
+    "studied_this_year": False
 }
 
 
@@ -54,16 +59,42 @@ def show_status():
     print(f"Енергия: {player['energy']}")
     if player["age"] >= 18:
         print(f"Пари: {player['money']}")
+    print(f"Диплома: {'Да' if player['degree'] else 'Не'}")
+    if player["in_university"]:
+        print(f"Специалност: {player['major']}")
+        print(f"Курс: {player['university_year']} / {player['university_duration']}")
+        print(f"Учи тази година: {'Да' if player['studied_this_year'] else 'Не'}")
     print("-" * 30)
 
 
 def next_year():
+    if player["in_university"] and not player["studied_this_year"]:
+        print("\nНе можеш да минеш година напред, без да си учил в университета.")
+        return
+
     player["age"] += 1
     player["energy"] -= 10
     print(f"\nМина още една година. Вече си на {player['age']} години.")
-    if player["money"] > 0:
-        player["money"] = int(player["money"] * 1.05) # 5% годишна лихва
-    random_event()
+
+    if player["in_university"]:
+        if random.random() < 0.75:
+            print("Успешно премина университетската година.")
+            player["university_year"] += 1
+        else:
+            print("Не успя да преминеш всички изпити и повтаряш курса.")
+
+        player["studied_this_year"] = False
+
+        if player["university_year"] > player["university_duration"]:
+            print(f"\nПоздравления! Завърши '{player['major']}' успешно!")
+            player["degree"] = True
+            player["in_university"] = False
+            player["major"] = ""
+            player["university_year"] = 0
+            player["university_duration"] = 0
+            player["studied_this_year"] = False
+
+    maybe_random_event(0.9)
 
 
 def study():
@@ -97,13 +128,24 @@ def rest():
 
 
 def work():
-    if player.get("degree") == True:
-        print("\nТи работиш като Софтуерен Инженер! +100 пари")
-        player["money"] += 100
+    if player["age"] < 18:
+        print("\nТвърде млад си, за да работиш.")
+        return
+
+    print("\nТи избра да работиш.")
+
+    if player["degree"]:
+        earned_money = random.randint(120, 220)
+        print("Имаш диплома и получаваш по-добро заплащане.")
     else:
-        print("\nТи работиш като Касиер. +30 пари")
-        player["money"] += 30
+        earned_money = random.randint(50, 120)
+        print("Работиш без диплома и получаваш стандартно заплащане.")
+
+    player["money"] += earned_money
     player["energy"] -= 20
+    player["happiness"] -= 5
+
+    print(f"Изкара {earned_money} лв.")
 
 def shop():
     print("\n=== МАГАЗИН ===")
@@ -162,21 +204,83 @@ def crime():
         player["happiness"] = 0
         print("Хванаха те! Прекара 3 години в затвора и загуби всичкото си щастие.")
 
-def university():
-    if player["money"] >= 500 and not player.get("degree"):
-        player["money"] -= 500
-        player["degree"] = True
-        player["intelligence"] += 40
-        print("Честито! Завърши университет. Вече ще изкарваш много повече пари!")
-    else:
-        print("Нямаш достатъчно пари (500) или вече имаш диплома!")
+def apply_to_university():
+    if player["age"] < 18:
+        print("\nТвърде млад си, за да кандидатстваш в университет.")
+        return
 
+    if player["degree"]:
+        print("\nТи вече имаш университетска диплома.")
+        return
+
+    if player["in_university"]:
+        print("\nВече учиш в университет.")
+        return
+
+    print("\n=== УНИВЕРСИТЕТ ===")
+    print("Избери специалност:")
+    print("1. Компютърни науки (4 години)")
+    print("2. Медицина (5 години)")
+    print("3. Бизнес (3 години)")
+    print("4. Право (4 години)")
+
+    choice = input("Избери специалност: ")
+
+    if choice == "1":
+        player["major"] = "Компютърни науки"
+        player["university_duration"] = 4
+    elif choice == "2":
+        player["major"] = "Медицина"
+        player["university_duration"] = 5
+    elif choice == "3":
+        player["major"] = "Бизнес"
+        player["university_duration"] = 3
+    elif choice == "4":
+        player["major"] = "Право"
+        player["university_duration"] = 4
+    else:
+        print("Невалиден избор.")
+        return
+
+    player["in_university"] = True
+    player["university_year"] = 1
+    player["studied_this_year"] = False
+
+    print(f"\nТи се записа в специалност '{player['major']}'!")
+
+def study_university():
+    if not player["in_university"]:
+        print("\nТи не учиш в университет.")
+        return
+
+    if player["studied_this_year"]:
+        print("\nТази година вече учи в университета.")
+        return
+
+    print(f"\nТи учиш в университет - {player['major']}, курс {player['university_year']}.")
+
+    player["intelligence"] += 5
+    player["energy"] -= 15
+    player["happiness"] -= 5
+    player["studied_this_year"] = True
+
+    print("Учи успешно тази година в университета.")
+    maybe_random_event(0.5)
 
 
 def random_event():
     age = player["age"]
 
-    if age <= 4:
+    if player["in_university"]:
+        events = [
+            ("Взе труден изпит успешно!", {"intelligence": 3, "happiness": 5}),
+            ("Не спа преди изпит.", {"energy": -10}),
+            ("Запозна се с нови колеги в университета.", {"happiness": 6}),
+            ("Имаше много учене тази седмица.", {"energy": -8, "intelligence": 2}),
+            ("Получи висока оценка на проект.", {"intelligence": 4, "happiness": 4}),
+        ]
+
+    elif age <= 4:
         events = [
             ("Научи се да казваш нова дума.", {"intelligence": 2, "happiness": 3}),
             ("Падна, докато тичаше.", {"health": -5}),
@@ -201,30 +305,28 @@ def random_event():
             ("Запозна се с нов приятел.", {"happiness": 10}),
             ("Стоя до късно и си изморен.", {"energy": -10}),
             ("Участва в състезание и се представи добре!", {"happiness": 10, "intelligence": 5}),
-            ("Получи похвала от учител.", {"happiness": 7, "intelligence": 3}),
-            ("Разболя се преди контролно.", {"health": -10, "happiness": -5}),
         ]
 
     else:
         events = [
-            ("Намери малка работа и изкара пари.", {"money": 50, "happiness": 5}),
-            ("Имаше тежък ден и си изморен.", {"energy": -10}),
-            ("Погрижи се за себе си и се чувстваш по-добре.", {"health": 5, "happiness": 5}),
-            ("Научи ново полезно умение.", {"intelligence": 4}),
-            ("Излезе с приятели.", {"happiness": 10, "money": -20}),
-            ("Похарчи пари за нещо неочаквано.", {"money": -30}),
-            ("Получаваш добра възможност за работа.", {"money": 70, "happiness": 5}),
+            ("Намери временна работа.", {"money": 50, "happiness": 4}),
+            ("Имаше тежък ден.", {"energy": -10}),
+            ("Излезе с приятели.", {"happiness": 8, "money": -20}),
+            ("Научи ново полезно умение.", {"intelligence": 3}),
         ]
 
     event = random.choice(events)
-    text = event[0]
-    effects = event[1]
+    text, effects = event
 
     print(f"\nСлучайно събитие: {text}")
 
     for stat, value in effects.items():
         player[stat] += value
 
+
+def maybe_random_event(chance=0.5):
+    if random.random() < chance:
+        random_event()
 
 def check_stats():
     # Ограничаваме стойностите да не стават прекалено големи или отрицателни
@@ -234,25 +336,26 @@ def check_stats():
         if player[stat] < 0:
             player[stat] = 0
 
+    if player["money"] < 0:
+        player["money"] = 0
+
 
 def is_game_over():
     if player["health"] <= 0:
         print("\nГероят се разболя твърде много. Играта свърши.")
-        return True
-    if player["energy"] <= 0:
-        print("\nГероят е напълно изтощен. Играта свърши.")
         score = player["money"] + (player["intelligence"] * 10) + (player["age"] * 50)
         print(f"\n🪦 ПОЧИВАЙ В МИР, {player['name']} 🪦")
         print(f"Доживя до {player['age']} години.")
         print(f"Твоят финален резултат е: {score} точки!")
         return True
+    if player["energy"] <= 0:
+        print("\nГероят е напълно изтощен. Играта свърши.")
+        return True
     return False
 
 
 def show_menu():
-    age = player["age"]
-
-    if age <= 4:
+    if player["age"] <= 4:
         print("\n=== МЕНЮ ===")
         print("1. Следваща година")
         print("2. Играй")
@@ -276,7 +379,7 @@ def show_menu():
         else:
             print("Невалиден избор, опитай пак.")
 
-    elif age < 18:
+    elif player["age"] <= 17:
         print("\n=== МЕНЮ ===")
         print("1. Следваща година")
         print("2. Учи")
@@ -306,19 +409,19 @@ def show_menu():
         else:
             print("Невалиден избор, опитай пак.")
 
-    elif age >= 18:
+
+    elif player["age"] >= 18:
         print("\n=== МЕНЮ ===")
         print("1. Следваща година")
         print("2. Работи")
-        print("3. Играй")
+        if player["in_university"]:
+            print("3. Учи в университет")
+        elif not player["degree"]:
+            print("3. Кандидатствай в университет")
         print("4. Спортувай")
         print("5. Почивай")
-        print("6. Магазин")
-        print("7. Извърши обир")
-        print("8. Покажи статус")
-        if not player.get("degree"):
-            print("9. Завърши Университет (500 пари)")
-        print("0. Изход")
+        print("6. Покажи статус")
+        print("7. Изход")
 
         choice = input("Избери действие: ")
 
@@ -327,30 +430,25 @@ def show_menu():
         elif choice == "2":
             work()
         elif choice == "3":
-            play()
+            if player["in_university"]:
+                study_university()
+            elif not player["degree"]:
+                apply_to_university()
+            else:
+                print("Невалиден избор.")
         elif choice == "4":
             sport()
         elif choice == "5":
             rest()
         elif choice == "6":
-            shop()
-        elif choice == "7":
-            crime()
-        elif choice == "8":
             show_status()
-        elif choice == "9" and not player.get("degree"):
-            university()
-        elif choice == "0":
+        elif choice == "7":
             print("Излезе от играта.")
             return False
         else:
             print("Невалиден избор, опитай пак.")
 
-    else:
-        print("Невалидни години!!!")
-
     return True
-
 
 def main():
     create_character()
