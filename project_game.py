@@ -208,16 +208,28 @@ def shop():
         print("Невалиден избор!")
 
 def crime():
-    if random.randint(1, 10) > 4: # 60% шанс за успех (60% success chance)
-        stolen = random.randint(200, 2000)
-        player["money"] += stolen
-        player["energy"] -= 15
-        player["intelligence"] += 10
-        print(f"Успешен обир! Ти открадна {stolen} пари.\n+10 Интелигентност, -15 Енергия")
+    if player["intelligence"] <70:
+        if random.randint(1, 10) > 4: # 60% шанс за успех (60% success chance)
+            stolen = random.randint(200, 1000)
+            player["money"] += stolen
+            player["energy"] -= 15
+            player["intelligence"] += 10
+            print(f"Успешен обир! Ти открадна {stolen} пари.\n+10 Интелигентност, -15 Енергия")
+        else:
+            player["age"] += 3 # Губиш 3 години в затвора (Lose 3 years in prison)
+            player["happiness"] = 0
+            print("Хванаха те! Прекара 3 години в затвора и загуби всичкото си щастие.")
     else:
-        player["age"] += 3 # Губиш 3 години в затвора (Lose 3 years in prison)
-        player["happiness"] = 0
-        print("Хванаха те! Прекара 3 години в затвора и загуби всичкото си щастие.")
+        if random.randint(1, 10) > 2: # 60% шанс за успех (60% success chance)
+            stolen = random.randint(700, 4000)
+            player["money"] += stolen
+            player["energy"] -= 15
+            player["intelligence"] += 10
+            print(f"Успешен обир! Ти открадна {stolen} пари.\n+10 Интелигентност, -15 Енергия")
+        else:
+            player["age"] += 3 # Губиш 3 години в затвора (Lose 3 years in prison)
+            player["happiness"] = 0
+            print("Хванаха те! Прекара 3 години в затвора и загуби всичкото си щастие.")
 
 def apply_to_university():
     if player["age"] < 18:
