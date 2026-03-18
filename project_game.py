@@ -79,11 +79,14 @@ def next_year():
     print(f"\nМина още една година. Вече си на {player['age']} години.")
 
     if player["age"] > 100:
-        death_chance = 0.05 
+        death_chance = 0.05
         if random.random() < death_chance:
-            print(f"\nЗа съжаление, животът ти приключи на {player['age']} години.")
+            print("Героят умря от старост. Играта свърши.")
             score = player["money"] + (player["intelligence"] * 10) + (player["age"] * 50)
-            exit() 
+            print(f"ПОЧИВАЙ В МИР, {player['name']}")
+            print(f"Доживя до {player['age']} години.")
+            print(f"Твоят финален резултат е: {score} точки!")
+            exit()
 
     if player["in_university"]:
         if random.random() < 0.75:
@@ -172,7 +175,7 @@ def shop():
         if player["money"] >= 20:
             player["money"] -= 20
             player["intelligence"] += 10
-            print("Ти си купи Книга! Интелигентността ти се покачи.")
+            print("Ти си купи Книга! Интелигентността ти се покачи.\n+10 Интелигентност")
         else:
             print("Нямаш достатъчно пари за това!")
     elif choice == "2":
@@ -180,7 +183,7 @@ def shop():
             player["money"] -= 10
             player["energy"] += 20
             player["health"] -= 5
-            print("Изпи Енергийна напитка! Имаш повече енергия, но не е много здравословно.")
+            print("Изпи Енергийна напитка! Имаш повече енергия, но не е много здравословно.\n+20 Енергия, -5 Здраве")
         else:
             print("Нямаш достатъчно пари за това!")
     elif choice == "3":
@@ -188,7 +191,7 @@ def shop():
             player["money"] -= 50
             player["health"] += 15
             player["energy"] -= 10
-            print("Купи си Фитнес карта и тренира здраво! Здравето ти се подобри.")
+            print("Купи си Фитнес карта и тренира здраво! Здравето ти се подобри.\n+15 Здраве, -10 Енергия")
         else:
             print("Нямаш достатъчно пари за това!")
     elif choice == "4":
@@ -196,7 +199,7 @@ def shop():
             player["money"] -= 40
             player["happiness"] += 20
             player["energy"] -= 5
-            print("Купи си нова Видеоигра! Много се забавлява.")
+            print("Купи си нова Видеоигра! Много се забавлява.\n+20 Щастие, -5 Енергия")
         else:
             print("Нямаш достатъчно пари за това!")
     elif choice == "5":
@@ -206,9 +209,11 @@ def shop():
 
 def crime():
     if random.randint(1, 10) > 4: # 60% шанс за успех (60% success chance)
-        stolen = random.randint(50, 200)
+        stolen = random.randint(200, 2000)
         player["money"] += stolen
-        print(f"Успешен обир! Ти открадна {stolen} пари.")
+        player["energy"] -= 15
+        player["intelligence"] += 10
+        print(f"Успешен обир! Ти открадна {stolen} пари.\n+10 Интелигентност, -15 Енергия")
     else:
         player["age"] += 3 # Губиш 3 години в затвора (Lose 3 years in prison)
         player["happiness"] = 0
@@ -354,7 +359,7 @@ def is_game_over():
     if player["health"] <= 0:
         print("\nГероят се разболя твърде много. Играта свърши.")
         score = player["money"] + (player["intelligence"] * 10) + (player["age"] * 50)
-        print(f"\n🪦 ПОЧИВАЙ В МИР, {player['name']} 🪦")
+        print(f"\nПОЧИВАЙ В МИР, {player['name']}")
         print(f"Доживя до {player['age']} години.")
         print(f"Твоят финален резултат е: {score} точки!")
         return True
@@ -445,9 +450,10 @@ def show_menu():
             print("3. Кандидатствай в университет")
         print("4. Спортувай")
         print("5. Магазин")
-        print("6. Почивай")
-        print("7. Покажи статус")
-        print("8. Изход")
+        print("6. Престъпление")
+        print("7. Почивай")
+        print("8. Покажи статус")
+        print("9. Изход")
 
         choice = input("Избери действие: ")
 
@@ -467,10 +473,12 @@ def show_menu():
         elif choice == "5":
             shop()
         elif choice == "6":
-            rest()
+            crime()
         elif choice == "7":
-            show_status()
+            rest()
         elif choice == "8":
+            show_status()
+        elif choice == "9":
             print("Излезе от играта.")
             return False
         else:
